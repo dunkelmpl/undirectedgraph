@@ -3,9 +3,7 @@
 
 UnionFind::UnionFind(size_t size) : parent(size), ranks(size)
 {
-    for (size_t index = 0; index < size; index++) {
-        parent[index] = index;
-    }
+    this->resetParents();
 }
 
 UnionFind::~UnionFind()
@@ -14,11 +12,15 @@ UnionFind::~UnionFind()
 
 void UnionFind::reset()
 {
-    for (size_t index = 0; index < parent.size(); index++) {
-        parent[index] = index;
-    }
-
+    this->resetParents();
     ranks.assign(ranks.size(), 0);
+}
+
+void UnionFind::resetParents()
+{
+    for (size_t index = 0; index < parent.size(); index++) {
+        parent[index] = (int)index;
+    }
 }
 
 int UnionFind::findRoot(int item)

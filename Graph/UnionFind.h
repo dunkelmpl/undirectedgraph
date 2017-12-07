@@ -18,6 +18,9 @@ public:
     void unite(int itemX, int itemY);
     bool isCyclic(int itemX, int itemY);
 
+protected:
+    void resetParents();
+
 private:
     vector<int> parent;
     vector<int> ranks;
