@@ -29,20 +29,30 @@ int main()
 
         //cout << "Graph " << (g.isCyclic() ? "contains" : "does not contain") << " cycle(s)" << endl;
 
-        vector<GraphEdge> mstKruskal = g.getKruskalMST();
-        cout << "Minimum spanning tree(Kruskal) : " << endl;
 
+        vector<GraphEdge> mstKruskal = g.getKruskalMST();
+        cout << "\nMinimum spanning tree(Kruskal) : " << endl;
+        
+        int totalWeight = 0;
         for (auto& edge : mstKruskal) {
+            totalWeight += edge.weight;
             cout << edge.src << "->" << edge.dest << "(weight: " << edge.weight << ")\n";
         }
+        cout << "Total weight : " << totalWeight << endl;
 
         vector<int> mstPrims = g.getPrimsMST();
-        cout << "Minimum spanning tree(Prim's) : " << endl;
 
+        cout << "\nMinimum spanning tree(Prim's) : " << endl;
+
+        totalWeight = 0;
         for (size_t vertice = 1; vertice < mstPrims.size(); vertice++) {
-            cout << mstPrims[vertice] << "->" <<
-                vertice << "(weight: " << g.getEdgeWeight(mstPrims[vertice], vertice) << ")\n";
+            int weight = g.getEdgeWeight(mstPrims[vertice], (int)vertice);
+            totalWeight += weight;
+
+            cout << mstPrims[vertice] << "->" << vertice << "(weight: " << weight << ")\n";
         }
+
+        cout << "Total weight : " << totalWeight << endl;
     }
 
     _CrtDumpMemoryLeaks();
