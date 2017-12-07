@@ -3,6 +3,8 @@
 
 #include "Graph.h"
 
+#define INF (INT_MAX)
+
 Graph::~Graph()
 {
 }
@@ -14,6 +16,11 @@ void Graph::addEdge(int itemX, int itemY, int weight /* = 1 */)
     }
 
     edges[itemX][itemY] = weight;
+}
+
+const int Graph::getEdgeWeight(int from, int to)
+{
+    return this->edges[from][to];
 }
 
 bool Graph::isCyclic()
@@ -79,4 +86,47 @@ vector<GraphEdge> Graph::getKruskalMST()
     }
 
     return mts;
+}
+
+vector<int> Graph::getPrimsMST()
+{
+    const int numVertices = edges.size();
+    vector<int> resultMST(numVertices, -1);
+
+    if (numVertices == 0) {
+        return resultMST;
+    }
+
+    vector<bool> mstSet(numVertices, false);
+    vector<int> nonMstSet(numVertices, INF);
+
+    nonMstSet[0] = 0;
+    int minNonMst = 0;
+
+    // Number of vertices that supposed to be in the MST
+    for (int vertice = 0; vertice < numVertices; vertice++) {
+        mstSet[minNonMst] = true;
+
+        int minSibling = -1;
+        int minSiblingWeight = INF;
+
+        for (size_t sibling = 0; sibling < edges[minNonMst].size(); sibling++) {
+            if ((mstSet[sibling] == false) && (nonMstSet[sibling] > edges[minNonMst][sibling])) {
+                nonMstSet[sibling] = edges[minNonMst][sibling];
+                resultMST[sibling] = sibling;
+
+                if (minSiblingWeight > nonMstSet[sibling]) {
+                    minSibling = sibling;
+                    minSiblingWeight = nonMstSet[sibling];
+                }
+            }
+        }
+
+        if (minSibling >= 0) {
+            mstSet[minNonMst] = true;
+            minNonMst = minSibling;
+        }
+    }
+
+    return resultMST;
 }
