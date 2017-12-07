@@ -35,4 +35,3 @@ private:
     // map key is destination vertice and map value is edge's weight
     vector<unordered_map<int, int>> edges;
 };
-

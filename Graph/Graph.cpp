@@ -56,7 +56,7 @@ vector<GraphEdge> Graph::getAllSortedEdges()
 
     for (size_t from = 0; from < edges.size(); from++) {
         for (pair<const int, int>& to : this->edges[from]) {
-            allEdges.push_back(GraphEdge(from, to.first, to.second));
+            allEdges.push_back(GraphEdge((int)from, to.first, to.second));
         }
     }
 
