@@ -15,7 +15,11 @@ void Graph::addEdge(int itemX, int itemY, int weight /* = 1 */)
         throw overflow_error("Invalid edge specified");
     }
 
-    edges[itemX][itemY] = weight;
+    int from = itemX < itemY ? itemX : itemY;
+    int to = itemX == from ? itemY : itemX;
+
+    edges[from][to] = weight;
+    edges[to][from] = weight;
 }
 
 const int Graph::getEdgeWeight(int from, int to)
