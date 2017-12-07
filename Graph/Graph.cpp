@@ -94,11 +94,11 @@ vector<GraphEdge> Graph::getKruskalMST()
 
 vector<int> Graph::getPrimsMST()
 {
-    const int numVertices = edges.size();
-    vector<int> resultMST(numVertices, -1);
+    const int numVertices = (int)edges.size();
+    vector<int> parent(numVertices, -1);
 
     if (numVertices == 0) {
-        return resultMST;
+        return parent;
     }
 
     vector<bool> mstSet(numVertices, false);
@@ -108,29 +108,34 @@ vector<int> Graph::getPrimsMST()
     int minNonMst = 0;
 
     // Number of vertices that supposed to be in the MST
-    for (int vertice = 0; vertice < numVertices; vertice++) {
+    for (int vertice = 0; vertice < numVertices-1; vertice++) {
+        minNonMst = [&mstSet, &nonMstSet]() -> int {
+            int minNonMst = -1;
+            int minNonMstWeight = INF;
+            for (int item = 0; item < (int)nonMstSet.size(); item++) {
+                if (mstSet[item] == false && nonMstSet[item] < minNonMstWeight) {
+                    minNonMst = item;
+                    minNonMstWeight = nonMstSet[item];
+                }
+            }
+
+            return minNonMst;
+        }();
+
         mstSet[minNonMst] = true;
 
         int minSibling = -1;
         int minSiblingWeight = INF;
 
-        for (size_t sibling = 0; sibling < edges[minNonMst].size(); sibling++) {
-            if ((mstSet[sibling] == false) && (nonMstSet[sibling] > edges[minNonMst][sibling])) {
-                nonMstSet[sibling] = edges[minNonMst][sibling];
-                resultMST[sibling] = sibling;
-
-                if (minSiblingWeight > nonMstSet[sibling]) {
-                    minSibling = sibling;
-                    minSiblingWeight = nonMstSet[sibling];
-                }
+        for (auto &siblingPair : edges[minNonMst]) {
+            int sibling = siblingPair.first;
+            int siblingWeight = siblingPair.second;
+            if ((mstSet[sibling] == false) && (siblingWeight < nonMstSet[sibling])) {
+                nonMstSet[sibling] = siblingWeight;
+                parent[sibling] = minNonMst;
             }
-        }
-
-        if (minSibling >= 0) {
-            mstSet[minNonMst] = true;
-            minNonMst = minSibling;
         }
     }
 
-    return resultMST;
+    return parent;
 }
