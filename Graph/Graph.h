@@ -23,6 +23,9 @@ public:
     void addEdge(int itemX, int itemY, int weight = 1);
     bool isCyclic();
     vector<GraphEdge> getKruskalMST();
+    vector<int> getPrimsMST();
+
+    const int getEdgeWeight(int from, int to);
 
 protected:
     vector<GraphEdge> getAllSortedEdges();

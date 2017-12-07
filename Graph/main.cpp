@@ -29,11 +29,19 @@ int main()
 
         //cout << "Graph " << (g.isCyclic() ? "contains" : "does not contain") << " cycle(s)" << endl;
 
-        vector<GraphEdge> mts = g.getKruskalMST();
+        vector<GraphEdge> mstKruskal = g.getKruskalMST();
         cout << "Minimum spanning tree(Kruskal) : " << endl;
 
-        for (auto& edge : mts) {
+        for (auto& edge : mstKruskal) {
             cout << edge.src << "->" << edge.dest << "(weight: " << edge.weight << ")\n";
+        }
+
+        vector<int> mstPrims = g.getPrimsMST();
+        cout << "Minimum spanning tree(Prim's) : " << endl;
+
+        for (size_t vertice = 1; vertice < mstPrims.size(); vertice++) {
+            cout << mstPrims[vertice] << "->" <<
+                vertice << "(weight: " << g.getEdgeWeight(mstPrims[vertice], vertice) << ")\n";
         }
     }
 
