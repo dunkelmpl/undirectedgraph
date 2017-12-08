@@ -92,12 +92,14 @@ vector<GraphEdge> Graph::getKruskalMST()
     return mts;
 }
 
-int Graph::getNextOptimalSourceVertice(vector<bool> currentInclusionSet, vector<int> currentVerticesWeights)
-{
+int Graph::getNextOptimalSourceVertice(
+    vector<bool> currentInclusionSet,
+    vector<int> currentVerticesWeights
+) {
     int minWeight = INF;
     int minIndex = -1;
     for (int index = 0; index < (int)currentVerticesWeights.size(); index++) {
-        if (!currentInclusionSet[index] && currentVerticesWeights[index] < minWeight) {
+        if (!currentInclusionSet[index] && currentVerticesWeights[index] <= minWeight) {
             minWeight = currentVerticesWeights[index];
             minIndex = index;
         }
@@ -151,26 +153,26 @@ vector<int> Graph::getDjikstraSPT(int start, vector<int>& paths)
     }
 
     vector<bool> sptSet(this->edges.size(), false);
-    vector<int> nonSptSet(this->edges.size(), INF);
-    vector<int> distances(this->edges.size(), 0);
+    vector<int> distances(this->edges.size(), INF);
     paths.assign(this->edges.size(), -1);
 
-    nonSptSet[start] = 0;
+    distances[start] = 0;
 
     // All the vertices, excluding start one, cause it's calculated (to be zero) initially
     for (int vertice = 0; vertice < numVertices - 1; vertice++) {
-        int srcVertice = this->getNextOptimalSourceVertice(sptSet, nonSptSet);
+        int srcVertice = this->getNextOptimalSourceVertice(sptSet, distances);
 
-        nonSptSet[srcVertice] = true;
+        sptSet[srcVertice] = true;
 
         for (auto& destVerticeData : this->edges[srcVertice]) {
             int destVertice = destVerticeData.first;
             int edgeWeight = destVerticeData.second;
 
-            if (!nonSptSet[destVertice] && (edgeWeight < nonSptSet[destVertice])) {
-                nonSptSet[destVertice] = edgeWeight;
-                distances[destVertice] += edgeWeight;
-                paths[destVertice] = srcVertice;
+            if (!sptSet[destVertice] &&
+                (distances[srcVertice] + edgeWeight < distances[destVertice])
+                ) {
+                    distances[destVertice] = distances[srcVertice] + edgeWeight;
+                    paths[destVertice] = srcVertice;
             }
         }
     }
