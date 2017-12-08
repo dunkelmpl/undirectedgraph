@@ -53,6 +53,42 @@ int main()
         }
 
         cout << "Total weight : " << totalWeight << endl;
+
+        int start = 0;
+        vector<int> paths;
+        vector<int> sptDjikstra = g.getDjikstraSPT(start, paths);
+
+        cout << "\nMinimum paths tree(Djikstra) : " << endl;
+        for (size_t dest = 0; dest < sptDjikstra.size(); dest++) {
+            if (dest != start) {
+                vector<int> backPath;
+                backPath.reserve(sptDjikstra.size());
+                backPath.push_back(dest);
+
+                int vertice = dest;
+                while (vertice != start) {
+                    backPath.push_back(paths[vertice]);
+                    vertice = paths[vertice];
+                }
+
+                cout << "\n" << start << " --> " << dest << ":\n";
+
+                bool first = true;
+                for (int vertexIndex = (int)backPath.size() - 1; vertexIndex >= 0; vertexIndex--) {
+                    if (!first) {
+                        cout << " -> ";
+                    }
+                    else {
+                        first = false;
+                    }
+                    cout << backPath[vertexIndex];
+                }
+
+                cout << ". Distance = " << sptDjikstra[dest] << endl;
+
+            }
+        }
+
     }
 
     _CrtDumpMemoryLeaks();

@@ -92,6 +92,22 @@ vector<GraphEdge> Graph::getKruskalMST()
     return mts;
 }
 
+int Graph::getNextOptimalSourceVertice(
+    vector<bool> currentInclusionSet,
+    vector<int> currentVerticesWeights
+) {
+    int minWeight = INF;
+    int minIndex = -1;
+    for (int index = 0; index < (int)currentVerticesWeights.size(); index++) {
+        if (!currentInclusionSet[index] && currentVerticesWeights[index] <= minWeight) {
+            minWeight = currentVerticesWeights[index];
+            minIndex = index;
+        }
+    }
+
+    return minIndex;
+}
+
 vector<int> Graph::getPrimsMST()
 {
     const int numVertices = (int)edges.size();
@@ -109,18 +125,7 @@ vector<int> Graph::getPrimsMST()
 
     // Number of vertices that supposed to be in the MST
     for (int vertice = 0; vertice < numVertices-1; vertice++) {
-        minNonMst = [&mstSet, &nonMstSet]() -> int {
-            int minNonMst = -1;
-            int minNonMstWeight = INF;
-            for (int item = 0; item < (int)nonMstSet.size(); item++) {
-                if (mstSet[item] == false && nonMstSet[item] < minNonMstWeight) {
-                    minNonMst = item;
-                    minNonMstWeight = nonMstSet[item];
-                }
-            }
-
-            return minNonMst;
-        }();
+        minNonMst = this->getNextOptimalSourceVertice(mstSet, nonMstSet);
 
         mstSet[minNonMst] = true;
 
@@ -138,4 +143,39 @@ vector<int> Graph::getPrimsMST()
     }
 
     return parent;
+}
+
+vector<int> Graph::getDjikstraSPT(int start, vector<int>& paths)
+{
+    int numVertices = (int)this->edges.size();
+    if (start < 0 && start >= numVertices) {
+        throw invalid_argument("Invalid shortest path tree start point");
+    }
+
+    vector<bool> sptSet(this->edges.size(), false);
+    vector<int> distances(this->edges.size(), INF);
+    paths.assign(this->edges.size(), -1);
+
+    distances[start] = 0;
+
+    // All the vertices, excluding start one, cause it's calculated (to be zero) initially
+    for (int vertice = 0; vertice < numVertices - 1; vertice++) {
+        int srcVertice = this->getNextOptimalSourceVertice(sptSet, distances);
+
+        sptSet[srcVertice] = true;
+
+        for (auto& destVerticeData : this->edges[srcVertice]) {
+            int destVertice = destVerticeData.first;
+            int edgeWeight = destVerticeData.second;
+
+            if (!sptSet[destVertice] &&
+                (distances[srcVertice] + edgeWeight < distances[destVertice])
+                ) {
+                    distances[destVertice] = distances[srcVertice] + edgeWeight;
+                    paths[destVertice] = srcVertice;
+            }
+        }
+    }
+
+    return distances;
 }
