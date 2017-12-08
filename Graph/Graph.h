@@ -24,11 +24,17 @@ public:
     bool isCyclic();
     vector<GraphEdge> getKruskalMST();
     vector<int> getPrimsMST();
+    vector<int> getDjikstraSPT(int start, vector<int>& paths);
 
     const int getEdgeWeight(int from, int to);
 
 protected:
     vector<GraphEdge> getAllSortedEdges();
+
+private:
+    // Finds next source vertice that is not uet included into minimum spanning tree or minimum path tree
+    // for the Prims/Djikstra algorithms.
+    int getNextOptimalSourceVertice(vector<bool> currentInclusionSet, vector<int> currentVerticesWeights);
 
 private:
     // weighted edges, wher vector[X] is source vertice,
